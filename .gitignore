@@ -1,0 +1,6 @@
+node_modules/*
+hasuraconfig.js
+HASURA.md
+webpack-assets.json
+static/*
+src/components/random/*
