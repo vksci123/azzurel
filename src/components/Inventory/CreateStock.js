@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { Link } from 'react-router';
 
-import { INPUT_VALUE_CHANGED, uploadInventoryData } from './InventoryAction.js';
+import { INPUT_VALUE_CHANGED, uploadInventoryData, checkExistence, updateStock } from './InventoryAction.js';
 
 class CreateStock extends Component {
 
@@ -27,7 +27,17 @@ class CreateStock extends Component {
     this.props.dispatch( { type: INPUT_VALUE_CHANGED, data: dataObj });
   }
   saveInventory() {
-    this.props.dispatch( uploadInventoryData(this.props) );
+    this.props.dispatch(checkExistence(this.props))
+      .then( (resp) => {
+        if (resp.length > 0) {
+          console.log('existing');
+          this.props.dispatch( updateStock(resp[0].id) );
+          /* Update */
+        } else {
+          this.props.dispatch( uploadInventoryData(this.props) );
+        }
+      });
+    // this.props.dispatch( uploadInventoryData(this.props) );
   }
   render() {
     const styles = require('./Stock.scss');

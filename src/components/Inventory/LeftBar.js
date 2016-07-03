@@ -43,12 +43,14 @@ class LeftNav extends Component {
                 </span>
               </div>
             </Link>
-            <div className={ styles.navigation_item + ' ' + ( activeElement === 'reports' ? styles.navigation_item_active : '') }>
-              <FontAwesome name="file" className={ styles.fa } />
-              <span className={ styles.nav_item }>
-                Reports
-              </span>
-            </div>
+            <Link to="/invoice/view">
+              <div className={ styles.navigation_item + ' ' + ( activeElement === 'reports' ? styles.navigation_item_active : '') }>
+                <FontAwesome name="file" className={ styles.fa } />
+                <span className={ styles.nav_item }>
+                  Reports
+                </span>
+              </div>
+            </Link>
             <Link to="/customer">
               <div className={ styles.navigation_item + ' ' + ( activeElement === 'customer' ? styles.navigation_item_active : '') }>
                 <FontAwesome name="users" className={ styles.fa } />

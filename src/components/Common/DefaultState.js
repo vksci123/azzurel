@@ -33,12 +33,19 @@ const defaultInvoiceState = {
   items: {},
   barCode: '',
   productFetched: false,
-  quantity: {}
+  quantity: {},
+  paymentType: 'Cash',
+  fetchedInvoice: []
+};
+
+const defaultInvoicePrintState = {
+  orderDetails: {}
 };
 
 export {
   defaultState,
   defaultInventoryState,
   defaultCustomerState,
-  defaultInvoiceState
+  defaultInvoiceState,
+  defaultInvoicePrintState
 };

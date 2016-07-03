@@ -14,5 +14,8 @@ export Wrapper from './Common/Wrapper';
 export Customer from './Customer/Customer';
 export CustomerWrapper from './Customer/CustomerWrapper';
 export InvoiceWrapper from './Invoice/InvoiceWrapper';
+export ReportWrapper from './Invoice/ReportWrapper';
 export Invoice from './Invoice/Invoice';
+export InvoiceView from './Invoice/InvoiceView';
+export InvoicePrint from './InvoicePrint/InvoicePrint';
 export CustomerView from './Customer/CustomerView';

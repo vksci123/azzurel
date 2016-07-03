@@ -21,7 +21,10 @@ import {
   Customer,
   CustomerWrapper,
   Invoice,
+  InvoiceView,
   InvoiceWrapper,
+  ReportWrapper,
+  InvoicePrint,
   CustomerView
 } from './components'; // eslint-disable-line no-unused-vars
 
@@ -100,6 +103,10 @@ const main = (
       <Route path="/invoice" component={InvoiceWrapper} onEnter={ requireLoginAndSchema } >
         <IndexRoute component={ Invoice } />
       </Route>
+      <Route path="/invoice/view" component={ReportWrapper} onEnter={ requireLoginAndSchema } >
+        <IndexRoute component={ InvoiceView } />
+      </Route>
+      <Route path="/generate_invoice/:Id" component={InvoicePrint} onEnter={ requireLoginAndSchema } />
     </Router>
 );
 

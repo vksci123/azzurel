@@ -82,7 +82,6 @@ const loadCustomerInformation = ( id ) => {
 const insertCustomer = () => {
   return (dispatch, getState) => {
     const currState = getState().customer_data;
-    console.log(currState);
     const customerObj = {};
     const customerInsertObj = {};
     const url = Endpoints.db + '/customer/insert';
@@ -95,7 +94,7 @@ const insertCustomer = () => {
     customerInsertObj.objects = [
       customerObj
     ];
-    customerInsertObj.returning = ['id'];
+    customerInsertObj.returning = ['id', 'name', 'email', 'contact_no', 'address'];
 
     const options = {
       method: 'POST',
@@ -110,7 +109,8 @@ const insertCustomer = () => {
       .then( (resp) => {
         if ( resp.returning.length > 0) {
           alert('Customer Created');
-          dispatch(routeActions.push('/invoice'));
+          dispatch({ type: UPDATE_CONSUMER_INFO, data: resp.returning[0] });
+          return dispatch(routeActions.push('/invoice'));
         }
       })
       .catch( (resp) => {
@@ -199,6 +199,7 @@ const customerReducer = ( state = defaultCustomerState, action ) => {
       consumerInfo.email = action.data.email;
       consumerInfo.contact_no = action.data.contact_no;
       consumerInfo.address = action.data.address;
+      consumerInfo.id = action.data.id;
       return { ...state, ...consumerInfo, recommendations: [], search: '', customerFound: true};
     case ERROR_HANDLING:
       return { ...state, customerFound: false};

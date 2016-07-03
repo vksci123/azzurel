@@ -27,10 +27,38 @@ class ViewStock extends Component {
     console.log(fetchedInventory );
 
     let fetchedInventoryHtml = fetchedInventory.map( ( inventory, index ) => {
+      console.log(inventory.stocks);
+      const returnQuantity = ( stocks ) => {
+        let qty = 0;
+        stocks.forEach( ( stock ) => {
+          qty += stock.quantity;
+        });
+        return qty;
+      };
+
+      const orderedQuantity = ( orders ) => {
+        let qty = 0;
+        orders.forEach( ( order ) => {
+          qty += order.quantity;
+        });
+        return qty;
+      };
+
+      const stockQuantity = ( inventory.stocks.length > 0 ) ? returnQuantity(inventory.stocks) : 0;
+
+      const availableQuantity = (inventory.stocks.length > 0) ? stockQuantity - orderedQuantity(inventory.orders) : 0;
+
+      // const inventoryUrl = '/inventory/edit/' + inventory.id;
       return (
               <tr key={ index } data-inventory-id={ inventory.id }>
                 <td data-inventory-id={ inventory.id }>
-                  <FontAwesome name="pencil-square-o" className={ styles.icon_class } data-inventory-id={ inventory.id } />
+                  {/*
+                  <Link to= { inventoryUrl }>
+                  */}
+                    <FontAwesome name="pencil-square-o" className={ styles.icon_class } data-inventory-id={ inventory.id } />
+                  {/*
+                  </Link>
+                  */}
                   <FontAwesome name="times" className={ styles.icon_class } data-inventory-id={ inventory.id } onClick= { this.deleteHandler.bind(this) } />
                 </td>
                 <td>
@@ -40,7 +68,10 @@ class ViewStock extends Component {
                   { inventory.name }
                 </td>
                 <td>
-                  { inventory.quantity ? inventory.quantity : 'N/A' }
+                  { stockQuantity }
+                </td>
+                <td>
+                  { availableQuantity }
                 </td>
                 <td>
                   { inventory.size }
@@ -71,6 +102,7 @@ class ViewStock extends Component {
                   <th> Code </th>
                   <th> Item Name </th>
                   <th> Quantity </th>
+                  <th> Available Quantity </th>
                   <th> Sizes </th>
                   <th> Colour </th>
                   <th> Price </th>

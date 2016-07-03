@@ -18,7 +18,10 @@ const ERROR_HANDLING = '@inventory/ERROR_HANDLING';
 const uploadInventoryData = ( propS ) => {
   return (dispatch) => {
     const url = Endpoints.db + '/inventory/insert';
+    const stockUrl = Endpoints.db + '/stock/insert';
     const insertObj = {};
+    const stockObj = {};
+    const stockReqObj = {};
     insertObj.name = propS.name;
     insertObj.bar_code = propS.bar_code;
     insertObj.colour = propS.colour;
@@ -26,12 +29,12 @@ const uploadInventoryData = ( propS ) => {
     insertObj.nickname = propS.nickname;
     insertObj.size = propS.size;
     insertObj.discount = propS.discount;
-    insertObj.quantity = propS.quantity;
+    // insertObj.quantity = propS.quantity;
     const obj = {};
     obj.objects = [ insertObj ];
     obj.returning = ['id'];
 
-    const options = {
+    let options = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: globalCookiePolicy,
@@ -41,8 +44,32 @@ const uploadInventoryData = ( propS ) => {
     return dispatch(requestAction(url, options))
       .then( ( resp ) => {
         console.log(resp);
-        alert('uploaded');
-        return dispatch(routeActions.push('/inventory'));
+        if ( resp.returning.length > 0) {
+          // Make a stock object
+          stockObj.quantity = propS.quantity;
+          stockObj.inventory_id = resp.returning[0].id;
+          stockObj.date_added = new Date().toISOString();
+          stockObj.inventory_number = 'n/a';
+          stockReqObj.objects = [stockObj];
+          stockReqObj.returning = ['id'];
+          options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: globalCookiePolicy,
+            body: JSON.stringify(stockReqObj),
+          };
+          return dispatch(requestAction(stockUrl, options));
+        }
+        alert('something went wrong while uploading inventory');
+        return false;
+      })
+      .then( ( resp ) => {
+        if ( resp.returning.length > 0) {
+          alert('uploaded');
+          return dispatch(routeActions.push('/inventory'));
+        }
+        alert('something went wrong while uploading stock');
+        return false;
       })
       .catch( ( resp ) => {
         console.log(resp);
@@ -51,12 +78,74 @@ const uploadInventoryData = ( propS ) => {
   };
 };
 
+const checkExistence = ( propS ) => {
+  return (dispatch) => {
+    const url = Endpoints.db + '/inventory/select';
+    const selectObj = {};
+    selectObj.columns = ['id'];
+    selectObj.where = {
+      'bar_code': propS.bar_code
+    };
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: globalCookiePolicy,
+      body: JSON.stringify(selectObj),
+    };
+
+    return dispatch(requestAction(url, options));
+  };
+};
+
+const updateStock = ( id ) => {
+  return (dispatch, getState) => {
+    const url = Endpoints.db + '/stock/insert';
+    const propS = getState().inventory_data;
+    const stockObj = {};
+    const stockReqObj = {};
+    let options;
+    stockObj.quantity = parseInt(propS.quantity, 10);
+    stockObj.inventory_id = id;
+    stockObj.date_added = new Date().toISOString();
+    stockObj.inventory_number = 'n/a';
+    stockReqObj.objects = [stockObj];
+    stockReqObj.returning = ['id'];
+    options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: globalCookiePolicy,
+      body: JSON.stringify(stockReqObj),
+    };
+    return dispatch(requestAction(url, options))
+      .then( ( resp ) => {
+        if ( resp.returning.length > 0 ) {
+          return dispatch(routeActions.push('/inventory'));
+        }
+        alert('error while updating stock');
+      })
+      .catch( ( resp ) => {
+        alert('error while updating stock' + resp);
+      });
+  };
+};
+
+
 const fetchInventoryData = () => {
   return (dispatch) => {
     const url = Endpoints.db + '/inventory/select';
     const selectObj = {};
     selectObj.columns = [
-      '*'
+      '*',
+      {
+        'name': 'stocks',
+        'columns': [
+          'id', 'quantity'
+        ]
+      },
+      {
+        'name': 'orders',
+        'columns': ['id', 'quantity']
+      }
     ];
     selectObj.order_by = '-id';
     const options = {
@@ -151,5 +240,7 @@ export {
   uploadInventoryData,
   fetchInventoryData,
   deleteInventoryData,
-  uploadCSV
+  uploadCSV,
+  checkExistence,
+  updateStock
 };

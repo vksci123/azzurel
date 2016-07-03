@@ -3,6 +3,10 @@
   float: left;
   background-color: #F0F3F4;
   margin-top: 2px;
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
   .table_body {
     margin: 5px;
     .icon_class {

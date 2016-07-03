@@ -8,12 +8,18 @@ import { updateCustomerInfo,
   fetchProduct,
   DEL_ITEM,
   UPDATE_BAR_CODE,
-  UPDATE_QUANTITY
+  UPDATE_QUANTITY,
+  createInvoice,
+  PAYMENT_OPTION_CHANGE
 } from './InvoiceAction';
 
 class Invoice extends Component {
   componentDidMount() {
     this.props.dispatch(updateCustomerInfo());
+  }
+  onPaymentOptionChange(e) {
+    const value = e.target.selectedOptions[0].value;
+    this.props.dispatch( { type: PAYMENT_OPTION_CHANGE, data: (value) });
   }
   barCodeRead(e) {
     const barCode = e.target.value;
@@ -28,11 +34,23 @@ class Invoice extends Component {
   }
   quantityChanged(e) {
     const barCode = e.target.getAttribute('data-field-id');
+    const productId = parseInt(e.target.getAttribute('data-field-item-id'), 10);
     const quantity = e.target.value;
 
     const processQuantity = () => {
       if ( !parseInt(quantity, 10) ) {
         alert('Please enter valid quantity ');
+        this.props.dispatch({ type: UPDATE_QUANTITY, data: {
+          barCode: barCode,
+          quantity: 1
+        }});
+        return false;
+      } else if ( parseInt(quantity, 10) > this.props.items[productId].available_quantity ) {
+        alert('Sorry selected number of items of this product is not available');
+        this.props.dispatch({ type: UPDATE_QUANTITY, data: {
+          barCode: barCode,
+          quantity: 1
+        }});
         return false;
       }
       this.props.dispatch({ type: UPDATE_QUANTITY, data: {
@@ -58,10 +76,13 @@ class Invoice extends Component {
     const itemId = parseInt(e.target.getAttribute('data-product-id'), 10);
     this.props.dispatch({ type: DEL_ITEM, data: itemId });
   }
+  createInvoice() {
+    this.props.dispatch(createInvoice());
+  }
   render() {
     const styles = require('./Invoice.scss');
     const currentDate = new Date();
-    const { items, barCode } = this.props;
+    const { items, barCode, paymentType} = this.props;
     let totalPrice = 0;
     let vat = 0;
 
@@ -86,14 +107,14 @@ class Invoice extends Component {
                 { items[item].size}
               </div>
               <div className={ styles.quantity_style }>
-                <input type="text" data-field-id = { items[item].bar_code } data-field-name="quantity" data-field-type="int" onChange={ this.quantityChanged.bind(this) } value = { this.props.quantity[ items[item].bar_code ] } />
+                <input type="text" data-field-id = { items[item].bar_code } data-field-name="quantity" data-field-type="int" onChange={ this.quantityChanged.bind(this) } value = { this.props.quantity[ items[item].bar_code ] } data-field-item-id = { items[item].id } />
               </div>
               <div className={ styles.discount_style }>
                 { items[item].discount }
               </div>
               <div className={ styles.price_style }>
                 <div className={ styles.indiv_price }>
-                  { items[item].price}
+                  { items[item].price * quantity }
                 </div>
                 <div className={ styles.cross_style }>
                   <div className={ styles.cross_wrapper }>
@@ -261,10 +282,18 @@ class Invoice extends Component {
               <div className={ styles.actions }>
                 <div className={ styles.buttons }>
                   <div className={ styles.select_box}>
-                    Payment Mode: Cash
+                    <p>
+                      Payment Mode
+                    </p>
+                    <p>
+                      <select data-field-name="type_of_payment" onChange = { this.onPaymentOptionChange.bind(this) } selected={ paymentType }>
+                        <option value="Cash"> Cash </option>
+                        <option value="Card"> Card </option>
+                      </select>
+                    </p>
                   </div>
                   <div className={ styles.pay_button}>
-                    <div className={ styles.pay_button_text }>
+                    <div className={ styles.pay_button_text } onClick={ this.createInvoice.bind(this) } >
                       Pay Now
                     </div>
                   </div>
@@ -284,7 +313,8 @@ Invoice.propTypes = {
   contact_no: PropTypes.number.isRequired,
   items: PropTypes.object.isRequired,
   barCode: PropTypes.string.isRequired,
-  quantity: PropTypes.object.isRequired
+  quantity: PropTypes.object.isRequired,
+  paymentType: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => {

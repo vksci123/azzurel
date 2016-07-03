@@ -242,7 +242,17 @@
         margin-right: 30px;
         .select_box {
           float: left;
-          padding: 20px;
+          padding-left: 10px;
+          select {
+            background-color: #468CC8;
+            border-radius: 3px;
+            margin-right: 30px;
+            color: white;
+            padding-left: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-right: 70px;
+          }
         }
         .pay_button {
           float: right;
