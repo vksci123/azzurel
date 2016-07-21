@@ -8,7 +8,7 @@ class Wrapper extends Component {
     const { children } = this.props;
     // const styles = require('./Inventory.scss');
     return (
-      <div>
+      <div { ...this.props } >
         <LeftNav { ...this.props }/>
         <RightSide { ...this.props } >
           { children }

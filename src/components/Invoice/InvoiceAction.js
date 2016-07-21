@@ -20,6 +20,8 @@ const PAYMENT_OPTION_CHANGE = '@invoice/PAYMENT_OPTION_CHANGE';
 
 const ORDER_FETCHED = '@invoice/ORDER_FETCHED';
 
+const RESET_INVOICE_DATA = '@invoice/RESET_INVOICE_DATA';
+
 /* End of it */
 
 /* Action creators */
@@ -224,6 +226,8 @@ const invoiceReducer = ( state = defaultInvoiceState, action ) => {
       return { ...state, fetchedInvoice: action.data };
     case ERROR_HANDLING:
       return { ...state };
+    case RESET_INVOICE_DATA:
+      return { ...defaultInvoiceState };
     default:
       return state;
   }
@@ -239,5 +243,6 @@ export {
   UPDATE_QUANTITY,
   createInvoice,
   PAYMENT_OPTION_CHANGE,
-  fetchInvoiceData
+  fetchInvoiceData,
+  RESET_INVOICE_DATA
 };

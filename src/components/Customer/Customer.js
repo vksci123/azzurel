@@ -2,7 +2,7 @@ import React, { Component, PropTypes} from 'react';
 
 import { connect } from 'react-redux';
 
-import { Link } from 'react-router';
+// import { Link } from 'react-router';
 
 import { routeActions } from 'redux-simple-router';
 
@@ -10,10 +10,15 @@ import { INPUT_VALUE_CHANGED,
   searchCustomer,
   RESET_SEARCH,
   loadCustomerInformation,
-  insertCustomer
+  insertCustomer,
+  cancelCustomer,
+  RESET_CONSUMER_DATA
 } from './CustomerAction';
 
 class Customer extends Component {
+  componentDidMount() {
+    this.props.dispatch({ type: RESET_CONSUMER_DATA });
+  }
   onChangeListener(e) {
     const dataObj = {};
     // const dataFieldType = e.target.getAttribute('data-field-type');
@@ -35,7 +40,9 @@ class Customer extends Component {
       this.props.dispatch({ type: RESET_SEARCH });
     }
   }
-
+  cancelCustomer() {
+    this.props.dispatch(cancelCustomer());
+  }
   saveConsumer() {
     if ( !this.props.customerFound ) {
       alert('consumer not found inserting');
@@ -123,9 +130,7 @@ class Customer extends Component {
                 </div>
                 <div className={ styles.float_bull_righ }>
                   <div className={ styles.form_element }>
-                    <Link to="/invoice">
-                      <input className={ styles.btn + ' ' + styles.white_btn} type="button" value="Cancel" />
-                    </Link>
+                    <input className={ styles.btn + ' ' + styles.white_btn} type="button" value="Cancel" onClick={ this.cancelCustomer.bind(this) } />
                   </div>
                   <div className={ styles.form_element }>
                     <input className={ styles.btn + ' ' + styles.blue_btn } type="button" value="Done" onClick={ this.saveConsumer.bind(this) } />

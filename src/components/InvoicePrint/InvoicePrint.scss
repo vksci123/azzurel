@@ -1,4 +1,13 @@
-body {
+@media print{
+  body{ background-color:#FFFFFF; background-image:none; color:#000000 }
+  #ad{ display:none;}
+  #leftbar{ display:none;}
+  #contentarea{ width:100%;}
+}
+
+.invoice_wrapper {
+  width: 100%;
+  float: left;
   font-family: Lato, sans-serif;
 }
 .invoice_print_wrapper {
@@ -6,14 +15,15 @@ body {
   float: left;
   border-top: 5px solid black;
   border-bottom: 5px solid black;
-  height: 240px;
+  height: 180px;
+  font-size: 10px;
   .header_wrapper {
-    padding-left: 40px;
-    padding-top: 10px;
+    /* padding-left: 40px; */
+    /* padding-top: 10px; */
     width: 100%;
     float: left;
     .line_wrapper {
-      width: 95%;
+      width: 100%;
       float: left;
       padding-top: 10px;
       .left_content {
@@ -31,10 +41,10 @@ body {
   }
   .azzurel_text_wrapper {
     position: absolute;
-    top: 8%;
-    left: 30%;
+    top: 30px;
+    left: 28%;
     .azzurel_text {
-      font-size: 105px;
+      font-size: 75px;
     }
     .azzurel_subheading {
       width: 100%;
@@ -52,10 +62,11 @@ body {
 .bill_wrapper {
   width:100%;
   float: left;
-  padding: 15px;
+  /* padding: 15px; */
+  font-size: 8px;
   .bill_container {
     padding-top:20px;
-    padding-left: 20px;
+    /* padding-left: 20px; */
     .bill {
       width: 100%;
     }
@@ -119,13 +130,14 @@ body {
 .bottom_summary {
   width: 100%;
   float: left;
+  font-size: 8px;
   .header_wrapper {
-    padding-left: 40px;
+    /* padding-left: 40px; */
     padding-top: 10px;
     width: 100%;
     float: left;
     .line_wrapper {
-      width: 95%;
+      width: 100%;
       float: left;
       padding-top: 10px;
       .left_content {
@@ -147,9 +159,4 @@ body {
   }
 }
 
-@media print{
-  body{ background-color:#FFFFFF; background-image:none; color:#000000 }
-  #ad{ display:none;}
-  #leftbar{ display:none;}
-  #contentarea{ width:100%;}
-}
+

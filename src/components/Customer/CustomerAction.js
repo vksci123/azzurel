@@ -19,6 +19,8 @@ const SEARCH_INPUT = '@customer/SEARCH_INPUT';
 const INPUT_VALUE_CHANGED = '@customer/INPUT_VALUE_CHANGED';
 const CUSTOMER_DATA_FETCHED = '@customer/CUSTOMER_DATA_FETCHED';
 
+const RESET_CONSUMER_DATA = '@customer/RESET_CONSUMER_DATA';
+
 /* Action creators */
 const searchCustomer = (input) => {
   return (dispatch) => {
@@ -168,6 +170,13 @@ const deleteCustomerData = (customerId) => {
   };
 };
 
+const cancelCustomer = () => {
+  return (dispatch) => {
+    dispatch({ type: RESET_CONSUMER_DATA });
+    return dispatch(routeActions.push('/invoice'));
+  };
+};
+
 /* End of it */
 
 /* */
@@ -207,6 +216,8 @@ const customerReducer = ( state = defaultCustomerState, action ) => {
       return { ...state, search: action.data};
     case CUSTOMER_DATA_FETCHED:
       return { ...state, fetchedCustomer: action.data };
+    case RESET_CONSUMER_DATA:
+      return { ...defaultCustomerState };
     default:
       return state;
   }
@@ -222,5 +233,7 @@ export {
   INPUT_VALUE_CHANGED,
   insertCustomer,
   fetchCustomerData,
-  deleteCustomerData
+  deleteCustomerData,
+  RESET_CONSUMER_DATA,
+  cancelCustomer
 };

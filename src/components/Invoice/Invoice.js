@@ -10,12 +10,17 @@ import { updateCustomerInfo,
   UPDATE_BAR_CODE,
   UPDATE_QUANTITY,
   createInvoice,
-  PAYMENT_OPTION_CHANGE
+  PAYMENT_OPTION_CHANGE,
+  RESET_INVOICE_DATA
 } from './InvoiceAction';
 
 class Invoice extends Component {
   componentDidMount() {
     this.props.dispatch(updateCustomerInfo());
+  }
+  componentWillUnmount() {
+    this.props.dispatch({ type: RESET_INVOICE_DATA });
+    // this.props.dispatch({ type: RESET_CONSUMER_DATA });
   }
   onPaymentOptionChange(e) {
     const value = e.target.selectedOptions[0].value;
@@ -79,6 +84,7 @@ class Invoice extends Component {
   createInvoice() {
     this.props.dispatch(createInvoice());
   }
+
   render() {
     const styles = require('./Invoice.scss');
     const currentDate = new Date();

@@ -72,12 +72,12 @@
       .invoice_info {
         width: 100%;
         background-color: white;
-        height: 500px;
+        height: 600px;
         .total_value_container {
-          padding-top: 30px;
-          float: right;
+          /* padding-top: 30px; */
+          float: left;
           margin-right: 50px;
-          width: 80%;
+          width: 100%;
           .total_value_wrapper {
             float: right;
             margin-right: 90px;
@@ -94,10 +94,10 @@
 
         }
         .vat_value_container {
-          padding-top: 30px;
-          float: right;
+          /* padding-top: 30px; */
+          float: left;
           margin-right: 50px;
-          width: 80%;
+          width: 100%;
           .vat_value_wrapper {
             float: right;
             margin-right: 90px;

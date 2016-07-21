@@ -15,6 +15,7 @@ class InvoiceView extends Component {
     const styles = require('../Inventory/Stock.scss');
     const FontAwesome = require('react-fontawesome');
     const { fetchedInvoice } = this.props;
+    let finalAmount = 0;
 
     let fetchedInvoiceHtml = fetchedInvoice.map( ( invoice, index ) => {
       const invUrl = '/generate_invoice/' + invoice.id;
@@ -30,6 +31,8 @@ class InvoiceView extends Component {
         totalAmount += amount;
         totalVat += vat;
       });
+
+      finalAmount += (totalAmount + totalVat);
       return (
               <tr key={ index } data-invoice-id={ invoice.id }>
                 <td data-invoice-id={ invoice.id }>
@@ -79,6 +82,15 @@ class InvoiceView extends Component {
               </thead>
               <tbody>
                 { fetchedInvoiceHtml }
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>Rs. { finalAmount }</td>
+                  <td></td>
+                </tr>
               </tbody>
             </table>
           );

@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import { INPUT_VALUE_CHANGED, makeRequest } from './Actions';
 
 class Login extends Component {
-  onLogin() {
+  onLogin(e) {
+    e.preventDefault();
     this.props.dispatch(makeRequest(this.props));
   }
   inputValueChanged(e) {
@@ -27,7 +28,7 @@ class Login extends Component {
               AZZUREL
             </h1>
           </div>
-          <form className={ styles.main_form }>
+          <form className={ styles.main_form } onSubmit={ this.onLogin.bind(this) }>
             <div className={ styles.form_element }>
               <input type="text" data-field-name="username" placeholder="Username" className={ styles.padding_left } onChange={ this.inputValueChanged.bind(this) } />
               <div className={ styles.text_before } >
@@ -49,7 +50,7 @@ class Login extends Component {
               </div>
             </div>
             <div className={ styles.form_element }>
-              <input type="button" value={ ongoingRequest ? 'LOGGING IN' : () => { return ( lastError.length > 0 ? lastError : 'LOGIN'); }() } onClick= { this.onLogin.bind(this) } />
+              <input type="submit" value={ ongoingRequest ? 'LOGGING IN' : () => { return ( lastError.length > 0 ? lastError : 'LOGIN'); }() } onClick= { this.onLogin.bind(this) } />
             </div>
           </form>
           <div className={ styles.info_message }>
