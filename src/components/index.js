@@ -19,3 +19,5 @@ export Invoice from './Invoice/Invoice';
 export InvoiceView from './Invoice/InvoiceView';
 export InvoicePrint from './InvoicePrint/InvoicePrint';
 export CustomerView from './Customer/CustomerView';
+
+export NotFound from './404/NotFound';

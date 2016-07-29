@@ -25,7 +25,8 @@ import {
   InvoiceWrapper,
   ReportWrapper,
   InvoicePrint,
-  CustomerView
+  CustomerView,
+  NotFound
 } from './components'; // eslint-disable-line no-unused-vars
 
 import {loadCredentials} from './components/Login/Actions';
@@ -71,6 +72,7 @@ global.socket = initSocket();
 // Main routes and rendering
 
 const requireLoginAndSchema = (nextState, replaceState, cb) => {
+  console.log(store.getState());
   const {loginState: {credentials} } = store.getState();
   if (credentials) {
     cb();
@@ -89,12 +91,47 @@ const requireLoginAndSchema = (nextState, replaceState, cb) => {
   );
 };
 
+const checkLogin = (nextState, replaceState, cb) => {
+  console.log(store.getState());
+  const {loginState: {credentials} } = store.getState();
+  if (credentials) {
+    console.log('User is already logged in!! Redirecting....');
+    if ( credentials.hasura_roles[1] === 'user' || credentials.hasura_roles[1] === 'billing') {
+      replaceState(null, '/invoice');
+    } else {
+      replaceState(null, '/inventory');
+    }
+    cb();
+    return;
+  }
+  Promise.all([
+    store.dispatch(loadCredentials()),
+    // store.dispatch(loadSchema())
+  ]).then(
+    () => {
+      console.log('User is already logged in!! Redirecting....');
+      const creds = store.getState().loginState.credentials;
+      if ( creds.hasura_roles[1] === 'user' || creds.hasura_roles[1] === 'billing') {
+        replaceState(null, '/invoice');
+      } else {
+        replaceState(null, '/inventory');
+      }
+      cb();
+    },
+    () => {
+      console.log('Login to continue....');
+      cb();
+    }
+  );
+};
+
 const main = (
     <Router history={browserHistory}>
-      <Route path="/login" component={Login} />
-      <Route path="/inventory" component={Inventory} onEnter={ requireLoginAndSchema } >
+      <Route path="/login" component={Login} onEnter={ checkLogin } />
+      <Route path="/" component={Inventory} onEnter={ requireLoginAndSchema } >
         <IndexRoute component={ViewStock} />
-        <Route path="create" component={CreateStock} />
+        <Route path="inventory" component={ViewStock} />
+        <Route path="inventory/create" component={CreateStock} />
       </Route>
       <Route path="/customer" component={CustomerWrapper} onEnter={ requireLoginAndSchema } >
         <IndexRoute component={ CustomerView } />
@@ -107,6 +144,7 @@ const main = (
         <IndexRoute component={ InvoiceView } />
       </Route>
       <Route path="/generate_invoice/:Id" component={InvoicePrint} onEnter={ requireLoginAndSchema } />
+      <Route path="*" component={NotFound} onEnter={ requireLoginAndSchema } />
     </Router>
 );
 

@@ -12,9 +12,13 @@ import fetch from 'isomorphic-fetch';
 import { routeActions } from 'redux-simple-router';
 import Endpoints, {globalCookiePolicy} from '../../Endpoints';
 
+import requestAction from '../Common/requestAction';
+
 const MAKE_REQUEST = 'Login/MAKE_REQUEST';
 const REQUEST_SUCCESS = 'Login/REQUEST_SUCCESS';
 const REQUEST_ERROR = 'Login/REQUEST_ERROR';
+
+const RESET = 'Login/RESET';
 
 const INPUT_VALUE_CHANGED = '@login/INPUT_VALUE_CHANGED';
 
@@ -31,13 +35,15 @@ const loginReducer = (state = defaultState, action) => {
     case MAKE_REQUEST:
       return {...state, ongoingRequest: true, lastSuccess: null, lastError: null};
     case REQUEST_SUCCESS:
-      return {...state, ongoingRequest: false, lastSuccess: action.data, lastError: null, credentials: action.data};
+      return {...state, ongoingRequest: false, lastSuccess: action.data, lastError: '', credentials: action.data};
     case REQUEST_ERROR:
       return {...state, ongoingRequest: false, lastError: action.data, lastSuccess: null};
     case INPUT_VALUE_CHANGED:
       const obj = {};
       obj[action.data.key] = action.data.value;
       return { ...state, ...obj };
+    case RESET:
+      return { ...defaultState };
     default: return state;
   }
 };
@@ -49,6 +55,7 @@ const makeRequest = (data) => {
   return (dispatch) => {
     dispatch({ type: MAKE_REQUEST});
     const loginData = {};
+    // const creds = getState().loginState.credentials;
     console.log(data);
     loginData.username = data.username;
     loginData.password = data.password;
@@ -58,13 +65,39 @@ const makeRequest = (data) => {
       credentials: globalCookiePolicy,
       headers: { 'Content-Type': 'application/json' }
     };
+    return dispatch(requestAction(Endpoints.login, options))
+      .then( ( response ) => {
+        const creds = response;
+        const retPropRedirect = ( ) => {
+          if ( creds.hasura_roles[1] === 'user' || creds.hasura_roles[1] === 'billing') {
+            return '/invoice';
+          }
+          return '/inventory';
+        };
+        return Promise.all([
+          dispatch(requestSuccess(response)),
+          dispatch( routeActions.push(retPropRedirect()) )
+        ]);
+      })
+      .catch( ( error ) => {
+        console.log(error);
+        return dispatch(requestFailed(error.message));
+      });
+      /*
     return fetch(Endpoints.login, options)
            .then(
              (response) => {
                if (response.ok) { // 2xx status
+                 const creds = response.json();
+                 const retPropRedirect = ( ) => {
+                   if ( creds.hasura_roles[1] === 'user' || creds.hasura_roles[1] === 'billing') {
+                     return routeActions.push('/invoice');
+                   }
+                   return routeActions.push('/inventory');
+                 };
                  return Promise.all([
                    dispatch(requestSuccess(response.json())),
-                   dispatch(routeActions.push('/inventory'))
+                   dispatch(retPropRedirect)
                  ]);
                }
                return dispatch(requestFailed('Error. Try again!'));
@@ -73,6 +106,7 @@ const makeRequest = (data) => {
                console.log(error);
                return dispatch(requestFailed(error.text));
              });
+            */
   };
 };
 
@@ -101,4 +135,4 @@ const loadCredentials = () => {
 };
 
 export default loginReducer;
-export {makeRequest, requestSuccess, requestFailed, loadCredentials, INPUT_VALUE_CHANGED};
+export {makeRequest, requestSuccess, requestFailed, loadCredentials, INPUT_VALUE_CHANGED, RESET};

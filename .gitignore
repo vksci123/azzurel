@@ -4,3 +4,4 @@ HASURA.md
 webpack-assets.json
 static/*
 src/components/random/*
+*.sw*

@@ -42,10 +42,15 @@ const defaultInvoicePrintState = {
   orderDetails: {}
 };
 
+const defaultLeftNavBarState = {
+  modules: []
+};
+
 export {
   defaultState,
   defaultInventoryState,
   defaultCustomerState,
   defaultInvoiceState,
-  defaultInvoicePrintState
+  defaultInvoicePrintState,
+  defaultLeftNavBarState
 };

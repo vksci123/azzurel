@@ -49,7 +49,7 @@ export default class Html extends Component {
 
             {/*FIXME: Use this for serializing SSR data
             <script dangerouslySetInnerHTML={{__html: `window.__data=${serialize(store.getState())};`}} charSet="UTF-8"/>*/}
-            <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+            <link href="https://fonts.googleapis.com/css?family=Lato:400,700&subset=latin-ext" rel="stylesheet" />
             </head>
         <body>
             <div className="content_wrapper" id="content" dangerouslySetInnerHTML={{__html: content}}/>

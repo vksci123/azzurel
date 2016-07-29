@@ -1,13 +1,43 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 
+import { connect } from 'react-redux';
+
+import {
+  fetchModules
+} from './LeftBarAction.js';
+
 class LeftNav extends Component {
+
+  componentWillMount() {
+    const roles = this.props.credentials.hasura_roles;
+    if ( roles ) {
+      this.props.dispatch( fetchModules(roles[1]) );
+    }
+  }
+
   render() {
     const styles = require('./LeftNav.scss');
 
     const FontAwesome = require('react-fontawesome');
 
-    const { activeElement } = this.props;
+    const { activeElement, modules } = this.props;
+
+    console.log( 'this' );
+    console.log(this.props);
+
+    const moduleHtml = modules.map( ( module, index ) => {
+      return (
+            <Link to={ module.url } key={ index }>
+              <div className={ styles.navigation_item + ' ' + ( activeElement === module.display_name ? styles.navigation_item_active : '') }>
+                <FontAwesome name="envelope" className={ styles.fa } />
+                <span className={ styles.nav_item }>
+                  { module.module }
+                </span>
+              </div>
+            </Link>
+          );
+    });
 
     return (
       <div className={ styles.left_nav_wrapper }>
@@ -27,6 +57,8 @@ class LeftNav extends Component {
                 Dashboard
               </span>
             </div>
+            { moduleHtml }
+            {/*
             <Link to="/invoice">
               <div className={ styles.navigation_item + ' ' + ( activeElement === 'invoice' ? styles.navigation_item_active : '') }>
                 <FontAwesome name="envelope" className={ styles.fa } />
@@ -59,6 +91,7 @@ class LeftNav extends Component {
                 </span>
               </div>
             </Link>
+            */}
             <div className={ styles.navigation_item }>
               <FontAwesome name="suitcase" className={ styles.fa } />
               <span className={ styles.nav_item }>
@@ -73,7 +106,14 @@ class LeftNav extends Component {
 }
 
 LeftNav.propTypes = {
-  activeElement: PropTypes.string.isRequired
+  activeElement: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  credentials: PropTypes.object.isRequired,
+  modules: PropTypes.array.isRequired
 };
 
-export default LeftNav;
+const mapStateToProps = ( state ) => {
+  return { ...state.loginState, ...state.left_nav_data };
+};
+
+export default connect(mapStateToProps)(LeftNav);
