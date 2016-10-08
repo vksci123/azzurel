@@ -24,3 +24,6 @@ export CustomerView from './Customer/CustomerView';
 export NotFound from './404/NotFound';
 export Transfer from '../components/Transfer/Transfer';
 export TransferWrapper from '../components/Transfer/TransferWrapper';
+
+export RetailerInventory from './RetailerStock/RetailerInventory';
+export RetailerStock from './RetailerStock/ViewStock';

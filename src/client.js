@@ -16,6 +16,8 @@ import {compose, createStore, applyMiddleware} from 'redux';
 import {
   Login,
   Inventory,
+  RetailerInventory,
+  RetailerStock,
   CreateStock,
   ViewStock,
   Customer,
@@ -135,6 +137,9 @@ const main = (
         <IndexRoute component={ViewStock} />
         <Route path="inventory" component={ViewStock} />
         <Route path="inventory/create" component={CreateStock} />
+      </Route>
+      <Route path="/retailer_stock" component={RetailerInventory} onEnter={ requireLoginAndSchema } >
+        <IndexRoute component={RetailerStock} />
       </Route>
       <Route path="/customer" component={CustomerWrapper} onEnter={ requireLoginAndSchema } >
         <IndexRoute component={ CustomerView } />

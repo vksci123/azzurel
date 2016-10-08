@@ -17,6 +17,10 @@ const defaultInventoryState = {
   fetchedInventory: []
 };
 
+const defaultRetailerInventory = {
+  fetchedInventory: []
+};
+
 const defaultCustomerState = {
   recommendations: [],
   search: '',
@@ -66,6 +70,7 @@ const defaultLeftNavBarState = {
 export {
   defaultState,
   defaultInventoryState,
+  defaultRetailerInventory,
   defaultCustomerState,
   defaultInvoiceState,
   defaultInvoicePrintState,

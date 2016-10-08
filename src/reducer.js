@@ -7,6 +7,7 @@ import transferPrintReducer from './components/TransferPrint/TransferPrintAction
 
 import leftBarReducer from './components/Inventory/LeftBarAction';
 import transferReducer from './components/Transfer/TransferAction';
+import retailerStockReducer from './components/RetailerStock/RetailerInventoryAction';
 
 import { combineReducers } from 'redux';
 
@@ -18,7 +19,8 @@ const reducer = combineReducers( {
   invoice_print_data: invoicePrintReducer,
   left_nav_data: leftBarReducer,
   transfer_data: transferReducer,
-  transfer_print_data: transferPrintReducer
+  transfer_print_data: transferPrintReducer,
+  retailer_data: retailerStockReducer
 });
 
 export default reducer;
