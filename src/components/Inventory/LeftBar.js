@@ -23,9 +23,6 @@ class LeftNav extends Component {
 
     const { activeElement, modules } = this.props;
 
-    console.log( 'this' );
-    console.log(this.props);
-
     const moduleHtml = modules.map( ( module, index ) => {
       return (
             <Link to={ module.url } key={ index }>

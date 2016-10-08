@@ -38,8 +38,25 @@ const defaultInvoiceState = {
   fetchedInvoice: []
 };
 
+const defaultTransferState = {
+  retailerData: [],
+  items: {},
+  price: {},
+  discount: {},
+  barCode: '',
+  productFetched: false,
+  quantity: {},
+  paymentType: 'Cash',
+  fetchedInvoice: [],
+  selectedRetailerId: ''
+};
+
 const defaultInvoicePrintState = {
   orderDetails: {}
+};
+
+const defaultTransferPrintState = {
+  transferDetails: []
 };
 
 const defaultLeftNavBarState = {
@@ -52,5 +69,7 @@ export {
   defaultCustomerState,
   defaultInvoiceState,
   defaultInvoicePrintState,
-  defaultLeftNavBarState
+  defaultLeftNavBarState,
+  defaultTransferState,
+  defaultTransferPrintState
 };

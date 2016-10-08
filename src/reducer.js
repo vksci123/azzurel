@@ -3,8 +3,10 @@ import inventoryReducer from './components/Inventory/InventoryAction';
 import customerReducer from './components/Customer/CustomerAction';
 import invoiceReducer from './components/Invoice/InvoiceAction';
 import invoicePrintReducer from './components/InvoicePrint/InvoicePrintAction';
+import transferPrintReducer from './components/TransferPrint/TransferPrintAction';
 
 import leftBarReducer from './components/Inventory/LeftBarAction';
+import transferReducer from './components/Transfer/TransferAction';
 
 import { combineReducers } from 'redux';
 
@@ -14,7 +16,9 @@ const reducer = combineReducers( {
   customer_data: customerReducer,
   invoice_data: invoiceReducer,
   invoice_print_data: invoicePrintReducer,
-  left_nav_data: leftBarReducer
+  left_nav_data: leftBarReducer,
+  transfer_data: transferReducer,
+  transfer_print_data: transferPrintReducer
 });
 
 export default reducer;

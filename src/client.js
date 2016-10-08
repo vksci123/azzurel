@@ -25,8 +25,11 @@ import {
   InvoiceWrapper,
   ReportWrapper,
   InvoicePrint,
+  TransferPrint,
   CustomerView,
-  NotFound
+  NotFound,
+  Transfer,
+  TransferWrapper
 } from './components'; // eslint-disable-line no-unused-vars
 
 import {loadCredentials} from './components/Login/Actions';
@@ -140,10 +143,14 @@ const main = (
       <Route path="/invoice" component={InvoiceWrapper} onEnter={ requireLoginAndSchema } >
         <IndexRoute component={ Invoice } />
       </Route>
+      <Route path="/transfer" component={TransferWrapper} onEnter={ requireLoginAndSchema } >
+        <IndexRoute component={ Transfer } />
+      </Route>
       <Route path="/invoice/view" component={ReportWrapper} onEnter={ requireLoginAndSchema } >
         <IndexRoute component={ InvoiceView } />
       </Route>
       <Route path="/generate_invoice/:Id" component={InvoicePrint} onEnter={ requireLoginAndSchema } />
+      <Route path="/generate_transfer/:Id" component={TransferPrint} onEnter={ requireLoginAndSchema } />
       <Route path="*" component={NotFound} onEnter={ requireLoginAndSchema } />
     </Router>
 );

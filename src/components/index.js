@@ -18,6 +18,9 @@ export ReportWrapper from './Invoice/ReportWrapper';
 export Invoice from './Invoice/Invoice';
 export InvoiceView from './Invoice/InvoiceView';
 export InvoicePrint from './InvoicePrint/InvoicePrint';
+export TransferPrint from './TransferPrint/TransferPrint';
 export CustomerView from './Customer/CustomerView';
 
 export NotFound from './404/NotFound';
+export Transfer from '../components/Transfer/Transfer';
+export TransferWrapper from '../components/Transfer/TransferWrapper';

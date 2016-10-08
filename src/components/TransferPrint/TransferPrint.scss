@@ -1,0 +1,162 @@
+@media print{
+  body{ background-color:#FFFFFF; background-image:none; color:#000000 }
+  #ad{ display:none;}
+  #leftbar{ display:none;}
+  #contentarea{ width:100%;}
+}
+
+.invoice_wrapper {
+  width: 100%;
+  float: left;
+  font-family: Lato, sans-serif;
+}
+.invoice_print_wrapper {
+  width: 100%;
+  float: left;
+  border-top: 5px solid black;
+  border-bottom: 5px solid black;
+  height: 180px;
+  font-size: 10px;
+  .header_wrapper {
+    /* padding-left: 40px; */
+    /* padding-top: 10px; */
+    width: 100%;
+    float: left;
+    .line_wrapper {
+      width: 100%;
+      float: left;
+      padding-top: 10px;
+      .left_content {
+        width: 30%;
+        float: left;
+      }
+      .right_content {
+        width: 30%;
+        float: right;
+        .right_content_text {
+          float: right;
+        }
+      }
+    }
+  }
+  .azzurel_text_wrapper {
+    position: absolute;
+    top: 30px;
+    left: 28%;
+    .azzurel_text {
+      font-size: 75px;
+    }
+    .azzurel_subheading {
+      width: 100%;
+      float:left;
+      .azzurel_subheading_text {
+        width: 50%;
+        margin: 0 auto;
+        font-size: 20px;
+        text-align: center;
+      }
+    }
+  }
+
+}
+.bill_wrapper {
+  width:100%;
+  float: left;
+  /* padding: 15px; */
+  font-size: 8px;
+  .bill_container {
+    padding-top:20px;
+    /* padding-left: 20px; */
+    .bill {
+      width: 100%;
+    }
+    .bill_header {
+      border-top: 2px dashed black;
+      border-bottom: 2px dashed black;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      div {
+        display: inline-block;
+        display: inline-block;
+        /* padding: 30px; */
+        /* padding-left: 30px; */
+        /* padding-right: 30px; */
+        /* padding-top: 5px; */
+        /* padding-bottom: 5px */
+        text-align: center;
+      }
+      .width_10 {
+        min-width: 10%;
+      }
+      .width_15 {
+        min-width: 15%;
+      }
+      .width_7 {
+        min-width: 7%;
+      }
+    }
+    .bill_header_values {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      div {
+        display: inline-block;
+        display: inline-block;
+        /* padding: 30px; */
+        /* padding-left: 30px; */
+        /* padding-right: 30px; */
+        /* padding-top: 5px; */
+        /* padding-bottom: 5px */
+        text-align: center;
+      }
+      .width_7 {
+        min-width: 7%;
+      }
+      .width_15 {
+        min-width: 15%;
+      }
+      .width_10 {
+        min-width: 10%;
+      }
+    }
+    .bill_header_bottom {
+      border-top: 2px dashed black;
+      border-bottom: 2px dashed #BFBFBF;
+      padding-top: 30px;
+      margin-top:50px;
+    }
+  }
+}
+
+.bottom_summary {
+  width: 100%;
+  float: left;
+  font-size: 8px;
+  .header_wrapper {
+    /* padding-left: 40px; */
+    padding-top: 10px;
+    width: 100%;
+    float: left;
+    .line_wrapper {
+      width: 100%;
+      float: left;
+      padding-top: 10px;
+      .left_content {
+        width: 30%;
+        float: left;
+      }
+      .right_content {
+        width: 30%;
+        float: right;
+        .right_content_text {
+          float: right;
+        }
+        .right_content_text_footer{
+          float: right;
+          padding-top: 30px;
+        }
+      }
+    }
+  }
+}
+
+
