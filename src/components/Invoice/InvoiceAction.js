@@ -2,16 +2,19 @@
 
 import { defaultInvoiceState } from '../Common/DefaultState';
 
-import Endpoints, { globalCookiePolicy } from '../../Endpoints';
+import Endpoints from '../../Endpoints';
 
 import requestAction from '../Common/requestAction';
 
 import { routeActions } from 'redux-simple-router';
 
+import { generateOptions } from '../Common/commonFunctions';
+
 /* Action Constants */
 
 const UPDATE_CUSTOMER_INFO = '@invoice/UPDATE_CUSTOMER_INFO';
 const PRODUCT_FETCHED = '@invoice/PRODUCT_FETCHED';
+const RETAILER_FETCHED = '@invoice/RETAILER_FETCHED';
 const ERROR_HANDLING = '@invoice/ERROR_HANDLING';
 const DEL_ITEM = '@invoice/DEL_ITEM';
 const UPDATE_BAR_CODE = '@invoice/UPDATE_BAR_CODE';
@@ -34,7 +37,7 @@ const updateCustomerInfo = () => {
 };
 
 const fetchProduct = (input) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const url = Endpoints.db + '/retail_product/select';
     const selectObj = {};
     selectObj.columns = [
@@ -58,13 +61,39 @@ const fetchProduct = (input) => {
       }
     };
 
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
     const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-hasura-role': 'admin'},
-      credentials: globalCookiePolicy,
-      body: JSON.stringify(selectObj),
+      ...genOpt,
+      body: JSON.stringify(selectObj)
     };
+
     return dispatch(requestAction(url, options, PRODUCT_FETCHED, ERROR_HANDLING));
+  };
+};
+
+const getRetailerPosInfo = () => {
+  return (dispatch, getState) => {
+    const url = Endpoints.db + '/retailer_pos/select';
+    const selectObj = {};
+    selectObj.columns = [
+      'id', 'name', 'contact_no'
+    ];
+
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
+    const options = {
+      ...genOpt,
+      body: JSON.stringify(selectObj)
+    };
+
+    return dispatch(requestAction(url, options, RETAILER_FETCHED, ERROR_HANDLING));
   };
 };
 
@@ -90,7 +119,7 @@ const createInvoice = () => {
 
     orderObj.vat_applied = parseFloat('12.5');
     orderObj.customer_id = getState().customer_data.id;
-    orderObj.retailer_id = getState().retailerId;
+    orderObj.retailer_id = currState.retailerId;
     orderObj.payment_type = currState.paymentType;
     orderObj.created_at = new Date().toISOString();
     orderObj.updated_at = new Date().toISOString();
@@ -98,11 +127,15 @@ const createInvoice = () => {
     orderInsertObj.objects = [ orderObj ];
     orderInsertObj.returning = ['id'];
 
-    let options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: globalCookiePolicy,
-      body: JSON.stringify(orderInsertObj),
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
+
+    const options = {
+      ...genOpt,
+      body: JSON.stringify(orderInsertObj)
     };
     return dispatch(requestAction(orderObjUrl, options))
       .then( ( resp ) => {
@@ -129,12 +162,8 @@ const createInvoice = () => {
           orderItemInsertObj.objects = orderItemObjs;
           orderItemInsertObj.returning = ['id'];
 
-          options = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: globalCookiePolicy,
-            body: JSON.stringify(orderItemInsertObj),
-          };
+          options.body = JSON.stringify(orderItemInsertObj);
+
           return dispatch(requestAction(orderItemUrl, options));
         }
         alert('something wrong happened while creating the order');
@@ -152,7 +181,7 @@ const createInvoice = () => {
 };
 
 const fetchInvoiceData = () => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const url = Endpoints.db + '/order/select';
     const selectObj = {};
     selectObj.columns = [
@@ -168,12 +197,17 @@ const fetchInvoiceData = () => {
     ];
     selectObj.order_by = '-created_at';
 
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
+
     const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: globalCookiePolicy,
-      body: JSON.stringify(selectObj),
+      ...genOpt,
+      body: JSON.stringify(selectObj)
     };
+
     return dispatch(requestAction(url, options, ORDER_FETCHED, ERROR_HANDLING));
   };
 };
@@ -210,6 +244,8 @@ const invoiceReducer = ( state = defaultInvoiceState, action ) => {
         return { ...state, items: { ...state.items, ...product }, barCode: '', productFetched: true, quantity: { ...state.quantity, ...quantity }, retailerId: retailerId};
       }
       return { ...state, productFetched: false};
+    case RETAILER_FETCHED:
+      return { ...state, retailerInfo: action.data };
     case DEL_ITEM:
       const products = Object.assign({}, state.items);
       const quantity = Object.assign({}, state.quantity);
@@ -247,5 +283,6 @@ export {
   createInvoice,
   PAYMENT_OPTION_CHANGE,
   fetchInvoiceData,
-  RESET_INVOICE_DATA
+  RESET_INVOICE_DATA,
+  getRetailerPosInfo
 };

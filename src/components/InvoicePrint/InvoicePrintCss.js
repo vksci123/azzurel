@@ -9,7 +9,7 @@ const styleObj = {
     'float': 'left',
     'borderTop': '5px solid black',
     'borderBottom': '5px solid black',
-    'height': '145px',
+    'height': '180px',
     'fontSize': '8px'
   },
   'header_wrapper': {

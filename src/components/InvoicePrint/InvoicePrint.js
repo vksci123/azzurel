@@ -94,7 +94,7 @@ class InvoicePrint extends Component {
                 <div style={ styleVar.line_wrapper }>
                   <div style={ styleVar.left_content }>
                     <div style={ styleVar.left_content_text}>
-                      SHOP ID: AZ-00123
+                      SHOP ID: AZ-{ isOrderDetail ? orderDetails.retailer.id : ''}
                     </div>
                   </div>
                   <div style={ styleVar.right_content }>
@@ -106,7 +106,7 @@ class InvoicePrint extends Component {
                 <div style={ styleVar.line_wrapper }>
                   <div style={ styleVar.left_content }>
                     <div style={ styleVar.left_content_text}>
-                      ADDRESS: C1 Janak Puri
+                      ADDRESS: { isOrderDetail ? orderDetails.retailer.shop_address : ''}
                     </div>
                   </div>
                   <div style={ styleVar.right_content }>
@@ -118,7 +118,7 @@ class InvoicePrint extends Component {
                 <div style={ styleVar.line_wrapper }>
                   <div style={ styleVar.left_content }>
                     <div style={ styleVar.left_content_text}>
-                      TIN NO: 1256225-w
+                      TIN NO: { isOrderDetail ? orderDetails.retailer.tin_no : ''}
                     </div>
                   </div>
                   <div style={ styleVar.right_content }>
@@ -129,7 +129,7 @@ class InvoicePrint extends Component {
                 <div style={ styleVar.line_wrapper }>
                   <div style={ styleVar.left_content }>
                     <div style={ styleVar.left_content_text}>
-                      CONTACT NO: 9999122221
+                      CONTACT NO: { isOrderDetail ? orderDetails.retailer.contact_no : ''}
                     </div>
                   </div>
                   <div style={ styleVar.right_content }>
@@ -141,7 +141,7 @@ class InvoicePrint extends Component {
                 <div style={ styleVar.line_wrapper }>
                   <div style={ styleVar.left_content }>
                     <div style={ styleVar.left_content_text}>
-                      SALE INCHARGE: PANKAJ
+                      SALE INCHARGE: { isOrderDetail ? orderDetails.retailer.pos[0].name : ''}
                     </div>
                   </div>
                   <div style={ styleVar.right_content }>

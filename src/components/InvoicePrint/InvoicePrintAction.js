@@ -2,7 +2,7 @@
 
 import { defaultInvoicePrintState } from '../Common/DefaultState';
 
-import Endpoints, { globalCookiePolicy } from '../../Endpoints';
+import Endpoints from '../../Endpoints';
 
 import requestAction from '../Common/requestAction';
 
@@ -10,12 +10,15 @@ import requestAction from '../Common/requestAction';
 
 const ORDER_FETCHED = '@invoiceprint/ORDER_FETCHED';
 const ERROR_HANDLING = '@invoiceprint/ERROR_HANDLING';
+
+import { generateOptions } from '../Common/commonFunctions';
+
 /* End of it */
 
 /* Action creators */
 
 const fetchOrder = (orderId) => {
-  return (dispatch) => {
+  return ( dispatch, getState ) => {
     const url = Endpoints.db + '/order/select';
     const selectObj = {};
     selectObj.columns = [
@@ -27,6 +30,10 @@ const fetchOrder = (orderId) => {
       {
         'name': 'customer',
         'columns': ['*']
+      },
+      {
+        'name': 'retailer',
+        'columns': ['*', { 'name': 'pos', 'columns': ['*'] }]
       }
     ];
     selectObj.where = {
@@ -35,11 +42,14 @@ const fetchOrder = (orderId) => {
       }
     };
 
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
     const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: globalCookiePolicy,
-      body: JSON.stringify(selectObj),
+      ...genOpt,
+      body: JSON.stringify(selectObj)
     };
     return dispatch(requestAction(url, options, ORDER_FETCHED, ERROR_HANDLING));
   };

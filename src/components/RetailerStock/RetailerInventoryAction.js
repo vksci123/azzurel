@@ -2,9 +2,11 @@
 
 import { defaultRetailerInventory } from '../Common/DefaultState';
 
-import Endpoints, { globalCookiePolicy } from '../../Endpoints';
+import Endpoints from '../../Endpoints';
 
 import requestAction from '../Common/requestAction';
+
+import { generateOptions } from '../Common/commonFunctions';
 
 /* Action constants */
 
@@ -15,7 +17,7 @@ const RESET = '@retailerstock/RESET';
 /* Action creators */
 
 const fetchInventoryData = () => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const url = Endpoints.db + '/retail_product/select';
     const selectObj = {};
     selectObj.columns = [
@@ -32,11 +34,15 @@ const fetchInventoryData = () => {
       }
     ];
     selectObj.order_by = '-id';
+
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
     const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-hasura-role': 'admin'},
-      credentials: globalCookiePolicy,
-      body: JSON.stringify(selectObj),
+      ...genOpt,
+      body: JSON.stringify(selectObj)
     };
 
     return dispatch(requestAction(url, options, INVENTORY_DATA_FETCHED, ERROR_HANDLING));

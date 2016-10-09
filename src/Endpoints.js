@@ -1,4 +1,4 @@
-const base = 'dated78.hasura-app.io';
+const base = 'cookie46.hasura-app.io';
 // const base = '';
 const Endpoints = {
   login: 'https://auth.' + base + '/login',

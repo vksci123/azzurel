@@ -2,11 +2,13 @@
 
 import { defaultCustomerState } from '../Common/DefaultState';
 
-import Endpoints, { globalCookiePolicy } from '../../Endpoints';
+import Endpoints from '../../Endpoints';
 
 import requestAction from '../Common/requestAction';
 
 import { routeActions } from 'redux-simple-router';
+
+import { generateOptions } from '../Common/commonFunctions';
 
 /* Action constants */
 
@@ -23,7 +25,7 @@ const RESET_CONSUMER_DATA = '@customer/RESET_CONSUMER_DATA';
 
 /* Action creators */
 const searchCustomer = (input) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const url = Endpoints.db + '/customer/select';
     const selectObj = {};
     selectObj.columns = [
@@ -49,13 +51,16 @@ const searchCustomer = (input) => {
         }
       ]
     };
-    const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: globalCookiePolicy,
-      body: JSON.stringify(selectObj),
-    };
 
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
+    const options = {
+      ...genOpt,
+      body: JSON.stringify(selectObj)
+    };
     dispatch( { type: SEARCH_INPUT, data: input });
 
     return dispatch(requestAction(url, options, SEARCH_ENTERED, ERROR_HANDLING));
@@ -98,11 +103,14 @@ const insertCustomer = () => {
     ];
     customerInsertObj.returning = ['id', 'name', 'email', 'contact_no', 'address'];
 
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
     const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: globalCookiePolicy,
-      body: JSON.stringify(customerInsertObj),
+      ...genOpt,
+      body: JSON.stringify(customerInsertObj)
     };
 
     // dispatch( { type: SEARCH_INPUT, data: input });
@@ -124,18 +132,22 @@ const insertCustomer = () => {
 
 /* Customer Operations */
 const fetchCustomerData = () => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const url = Endpoints.db + '/customer/select';
     const selectObj = {};
     selectObj.columns = [
       '*'
     ];
     selectObj.order_by = '-id';
+
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
     const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: globalCookiePolicy,
-      body: JSON.stringify(selectObj),
+      ...genOpt,
+      body: JSON.stringify(selectObj)
     };
 
     return dispatch(requestAction(url, options, CUSTOMER_DATA_FETCHED, ERROR_HANDLING));
@@ -143,18 +155,22 @@ const fetchCustomerData = () => {
 };
 
 const deleteCustomerData = (customerId) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const deleteObj = {};
     const url = Endpoints.db + '/customer/delete';
     deleteObj.where = {
       'id': parseInt(customerId, 10)
     };
     deleteObj.returning = ['id'];
+
+    const genOpt = generateOptions( getState().loginState.credentials );
+    if ( Object.keys(genOpt).length === 0 ) {
+      alert('Users role not detected');
+      return false;
+    }
     const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: globalCookiePolicy,
-      body: JSON.stringify(deleteObj),
+      ...genOpt,
+      body: JSON.stringify(deleteObj)
     };
 
     return dispatch(requestAction(url, options))

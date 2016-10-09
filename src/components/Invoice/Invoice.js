@@ -11,12 +11,14 @@ import { updateCustomerInfo,
   UPDATE_QUANTITY,
   createInvoice,
   PAYMENT_OPTION_CHANGE,
-  RESET_INVOICE_DATA
+  RESET_INVOICE_DATA,
+  getRetailerPosInfo
 } from './InvoiceAction';
 
 class Invoice extends Component {
   componentDidMount() {
     this.props.dispatch(updateCustomerInfo());
+    this.props.dispatch(getRetailerPosInfo());
   }
   componentWillUnmount() {
     this.props.dispatch({ type: RESET_INVOICE_DATA });
@@ -88,7 +90,7 @@ class Invoice extends Component {
   render() {
     const styles = require('./Invoice.scss');
     const currentDate = new Date();
-    const { items, barCode, paymentType} = this.props;
+    const { items, barCode, paymentType, retailerInfo } = this.props;
     let totalPrice = 0;
     let vat = 0;
 
@@ -173,10 +175,7 @@ class Invoice extends Component {
                       </div>
                       <div className={ styles.incharge_info }>
                         <div>
-                          Shop Incharge: Mr. Raghuveesh
-                        </div>
-                        <div>
-                          TIN No.: 039859942
+                          Shop Incharge: Mr. { retailerInfo.length > 0 ? retailerInfo[0].name : '' }
                         </div>
                       </div>
                     </div>
@@ -320,7 +319,8 @@ Invoice.propTypes = {
   items: PropTypes.object.isRequired,
   barCode: PropTypes.string.isRequired,
   quantity: PropTypes.object.isRequired,
-  paymentType: PropTypes.string.isRequired
+  paymentType: PropTypes.string.isRequired,
+  retailerInfo: PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state) => {
