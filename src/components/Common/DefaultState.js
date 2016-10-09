@@ -39,7 +39,8 @@ const defaultInvoiceState = {
   productFetched: false,
   quantity: {},
   paymentType: 'Cash',
-  fetchedInvoice: []
+  fetchedInvoice: [],
+  retailerId: 0
 };
 
 const defaultTransferState = {

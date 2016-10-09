@@ -93,8 +93,8 @@ class Invoice extends Component {
     let vat = 0;
 
     const scannedItems = Object.keys(items).map( (item, index) => {
-      const quantity = this.props.quantity[items[item].bar_code];
-      totalPrice += ( quantity * items[item].price);
+      const quantity = this.props.quantity[items[item].inventory.bar_code];
+      totalPrice += ( quantity * items[item].price_per_qty);
 
       if ( index === Object.keys(items).length - 1) {
         vat = parseFloat((totalPrice * 12.5) / 100).toFixed(2);
@@ -104,27 +104,27 @@ class Invoice extends Component {
       return (
             <div key={ index } className={ styles.billing_header + ' ' + styles.row }>
               <div className={ styles.code_style }>
-                { items[item].bar_code }
+                { items[item].inventory.bar_code }
               </div>
               <div className={ styles.product_style }>
-                { items[item].name }
+                { items[item].inventory.name }
               </div>
               <div className={ styles.size_style }>
-                { items[item].size}
+                { items[item].inventory.size}
               </div>
               <div className={ styles.quantity_style }>
-                <input type="text" data-field-id = { items[item].bar_code } data-field-name="quantity" data-field-type="int" onChange={ this.quantityChanged.bind(this) } value = { this.props.quantity[ items[item].bar_code ] } data-field-item-id = { items[item].id } />
+                <input type="text" data-field-id = { items[item].inventory.bar_code } data-field-name="quantity" data-field-type="int" onChange={ this.quantityChanged.bind(this) } value = { this.props.quantity[ items[item].inventory.bar_code ] } data-field-item-id = { items[item].inventory.id } />
               </div>
-              <div className={ styles.discount_style }>
-                { items[item].discount }
+              <div className={ styles.quantity_style }>
+                { items[item].price_per_qty }
               </div>
               <div className={ styles.price_style }>
                 <div className={ styles.indiv_price }>
-                  { items[item].price * quantity }
+                  { items[item].price_per_qty * quantity }
                 </div>
                 <div className={ styles.cross_style }>
                   <div className={ styles.cross_wrapper }>
-                    <div className={ styles.cross } data-product-id={ items[item].id } onClick = { this.deleteItem.bind(this) } >
+                    <div className={ styles.cross } data-product-id={ items[item].inventory.id } onClick = { this.deleteItem.bind(this) } >
                       x
                     </div>
                   </div>
@@ -236,11 +236,11 @@ class Invoice extends Component {
                       <div className={ styles.quantity_style }>
                         Quantity
                       </div>
-                      <div className={ styles.discount_style }>
-                        Discount
+                      <div className={ styles.quantity_style }>
+                        Unit Price
                       </div>
                       <div className={ styles.price_style }>
-                        Price
+                        Net Price
                       </div>
                     </div>
                     { scannedItems }

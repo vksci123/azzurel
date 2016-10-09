@@ -35,29 +35,32 @@ const updateCustomerInfo = () => {
 
 const fetchProduct = (input) => {
   return (dispatch) => {
-    const url = Endpoints.db + '/inventory/select';
+    const url = Endpoints.db + '/retail_product/select';
     const selectObj = {};
     selectObj.columns = [
       '*',
       {
-        'name': 'orders',
-        'columns': ['id', 'quantity']
-      },
-      {
-        'name': 'stocks',
-        'columns': ['id', 'quantity']
+        'name': 'inventory',
+        'columns': ['*',
+          {
+            'name': 'orders',
+            'columns': ['id', 'quantity']
+          }
+        ]
       }
     ];
     selectObj.order_by = '-id';
     selectObj.where = {
-      'bar_code': {
-        '$eq': input
+      'inventory': {
+        'bar_code': {
+          '$eq': input
+        }
       }
     };
 
     const options = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-hasura-role': 'admin'},
       credentials: globalCookiePolicy,
       body: JSON.stringify(selectObj),
     };
@@ -87,6 +90,7 @@ const createInvoice = () => {
 
     orderObj.vat_applied = parseFloat('12.5');
     orderObj.customer_id = getState().customer_data.id;
+    orderObj.retailer_id = getState().retailerId;
     orderObj.payment_type = currState.paymentType;
     orderObj.created_at = new Date().toISOString();
     orderObj.updated_at = new Date().toISOString();
@@ -112,12 +116,12 @@ const createInvoice = () => {
             orderItemObj = {};
             orderItemObj.parent_product_id = parseInt(item, 10);
             orderItemObj.order_id = resp.returning[0].id;
-            orderItemObj.name = currState.items[item].name;
-            orderItemObj.purchase_price = currState.items[item].price;
-            orderItemObj.color = currState.items[item].colour;
-            orderItemObj.size = currState.items[item].size;
-            orderItemObj.discount = currState.items[item].discount;
-            orderItemObj.quantity = currState.quantity[currState.items[item].bar_code];
+            orderItemObj.name = currState.items[item].inventory.name;
+            orderItemObj.purchase_price = currState.items[item].price_per_qty;
+            orderItemObj.color = currState.items[item].inventory.colour;
+            orderItemObj.size = currState.items[item].inventory.size;
+            orderItemObj.discount = 0;
+            orderItemObj.quantity = currState.quantity[currState.items[item].inventory.bar_code];
             orderItemObjs.push(orderItemObj);
           });
 
@@ -185,14 +189,13 @@ const invoiceReducer = ( state = defaultInvoiceState, action ) => {
     case PRODUCT_FETCHED:
       const product = {};
       if ( action.data.length > 0) {
-        product[action.data[0].id] = action.data[0];
-        let totalQuantity = 0;
+        product[action.data[0].inventory.id] = action.data[0];
         let soldQuantity = 0;
+        const retailerId = action.data[0].retailer_id;
 
-        action.data[0].stocks.forEach( ( stock ) => {
-          totalQuantity += stock.quantity;
-        });
-        action.data[0].orders.forEach( ( order ) => {
+        const totalQuantity = action.data[0].qty;
+
+        action.data[0].inventory.orders.forEach( ( order ) => {
           soldQuantity += order.quantity;
         });
 
@@ -200,11 +203,11 @@ const invoiceReducer = ( state = defaultInvoiceState, action ) => {
           alert('product is unavailable');
           return { ...state };
         }
-        product[action.data[0].id].available_quantity = totalQuantity - soldQuantity;
+        product[action.data[0].inventory.id].available_quantity = totalQuantity - soldQuantity;
         /* Default Quantity is 1 */
         const quantity = {};
-        quantity[action.data[0].bar_code] = 1;
-        return { ...state, items: { ...state.items, ...product }, barCode: '', productFetched: true, quantity: { ...state.quantity, ...quantity }};
+        quantity[action.data[0].inventory.bar_code] = 1;
+        return { ...state, items: { ...state.items, ...product }, barCode: '', productFetched: true, quantity: { ...state.quantity, ...quantity }, retailerId: retailerId};
       }
       return { ...state, productFetched: false};
     case DEL_ITEM:
